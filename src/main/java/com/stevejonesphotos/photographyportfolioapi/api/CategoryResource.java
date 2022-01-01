@@ -1,45 +1,50 @@
 package com.stevejonesphotos.photographyportfolioapi.api;
 
 import com.stevejonesphotos.photographyportfolioapi.domain.Category;
+import com.stevejonesphotos.photographyportfolioapi.service.CategoryService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileInputStream;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/categories")
 public class CategoryResource {
 
-    public static String CAT_ID_1 = "1f4073da-b6a0-4344-a8e2-bef1a1157f61";
-    public static String CAT_ID_2 = "1f4073da-b6a0-4344-a8e2-bef1a1157f62";
-    public static String CAT_ID_3 = "1f4073da-b6a0-4344-a8e2-bef1a1157f63";
-    public static String CAT_ID_4 = "1f4073da-b6a0-4344-a8e2-bef1a1157f64";
-    public static String CAT_ID_5 = "1f4073da-b6a0-4344-a8e2-bef1a1157f65";
-    public static String CAT_ID_6 = "1f4073da-b6a0-4344-a8e2-bef1a1157f66";
-    public static String CAT_ID_7 = "1f4073da-b6a0-4344-a8e2-bef1a1157f67";
-    public static String CAT_ID_8 = "1f4073da-b6a0-4344-a8e2-bef1a1157f68";
-    private final String thumbnailUrl = "https://stevejonesphotos.co.uk/wp-content/uploads/2021/11/6A8DB73C-295C-471A-82D3-216DFD3AEF8B-scaled.jpeg";
-    private final List<Category> categories = List.of(
-            new Category(CAT_ID_1, "Holiday", "holiday-1", thumbnailUrl),
-            new Category(CAT_ID_2, "Summer", "summer-2", thumbnailUrl),
-            new Category(CAT_ID_3, "Spring", "spring-3", thumbnailUrl),
-            new Category(CAT_ID_4, "Cats", "cats-4", thumbnailUrl),
-            new Category(CAT_ID_5, "Dogs", "dogs-5", thumbnailUrl),
-            new Category(CAT_ID_6, "Birds", "birds-6", thumbnailUrl),
-            new Category(CAT_ID_7, "People", "people-7", thumbnailUrl),
-            new Category(CAT_ID_8, "Dragons", "dragons-8", thumbnailUrl)
-    );;
+    @Autowired
+    CategoryService categoryService;
 
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/find-all")
     public List<Category> findAll() {
-        return categories;
+        return categoryService.findAll();
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/find-by-id/{categoryId}")
     public Optional<Category> findById(@PathVariable String categoryId) {
-        return categories.stream().filter((category) -> category.getId() == (categoryId)).findFirst();
+        return categoryService.findById(categoryId);
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000")
+    @PostMapping("/add-category")
+    public void addCategory(@RequestParam String categoryName, @RequestParam MultipartFile thumbnailImage) {
+        String thumbnailUrl = uploadThumbnail(thumbnailImage);
+        Category newCategory = new Category(UUID.randomUUID().toString(), categoryName, createCategorySlug(categoryName), thumbnailUrl);
+        categoryService.add(newCategory);
+    }
+
+    private String createCategorySlug(String categoryName) {
+        return categoryName.toLowerCase().replace(" ", "-");
+    }
+
+    private String uploadThumbnail(MultipartFile thumbnailImage) {
+        return "https://stevejonesphotos.co.uk/wp-content/uploads/2021/11/6A8DB73C-295C-471A-82D3-216DFD3AEF8B-scaled.jpeg";
     }
 
 }
