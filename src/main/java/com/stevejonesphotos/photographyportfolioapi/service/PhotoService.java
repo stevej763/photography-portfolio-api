@@ -9,23 +9,28 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class PhotoService implements StorageService<Photo> {
+public class PhotoService implements PersistedDataService<Photo, String> {
 
     @Autowired
     PhotoRepository photoRepository;
 
     @Override
-    public void add(Photo photo) {
+    public String add(Photo photo) {
         photoRepository.insert(photo);
+        return "";
     }
 
     @Override
     public Optional<Photo> findById(String id) {
-        return null;
+        return photoRepository.findById(id);
     }
 
     @Override
     public List<Photo> findAll() {
-        return null;
+        return photoRepository.findAll();
+    }
+
+    public List<Photo> findAllForCategory(String categoryId) {
+        return photoRepository.findByCategories(categoryId);
     }
 }

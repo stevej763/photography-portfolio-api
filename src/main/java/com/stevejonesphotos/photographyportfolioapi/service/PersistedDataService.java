@@ -5,9 +5,9 @@ import com.stevejonesphotos.photographyportfolioapi.domain.Category;
 import java.util.List;
 import java.util.Optional;
 
-public interface StorageService<T> {
+public interface PersistedDataService<T, E> {
 
-    void add(T object);
+    E add(T object);
 
     Optional<T> findById(String id);
 
