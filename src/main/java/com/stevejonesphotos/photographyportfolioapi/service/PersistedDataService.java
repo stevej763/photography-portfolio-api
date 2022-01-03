@@ -1,6 +1,7 @@
 package com.stevejonesphotos.photographyportfolioapi.service;
 
 import com.stevejonesphotos.photographyportfolioapi.domain.Category;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;

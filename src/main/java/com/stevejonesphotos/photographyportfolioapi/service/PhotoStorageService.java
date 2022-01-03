@@ -11,9 +11,9 @@ import org.springframework.stereotype.Component;
 import java.io.InputStream;
 
 @Component
-public class CategoryStorageService implements AwsStorageService {
+public class PhotoStorageService implements AwsStorageService {
 
-    private final String FILE_PREFIX = "category/";
+    private final String FILE_PREFIX = "photo/";
 
     @Autowired
     private AmazonS3 s3Client;
@@ -23,11 +23,10 @@ public class CategoryStorageService implements AwsStorageService {
 
     @Override
     public String uploadFile(InputStream inputStream, ObjectMetadata metadata, String fileName, ImageDetail imageDetail) {
-            String bucketName = environment.getProperty("application.bucket.name");
-            System.out.println("attempting to upload file");
-            String fileKey = FILE_PREFIX + imageDetail.getFolderName() + fileName + ".jpeg";
-            s3Client.putObject(new PutObjectRequest(bucketName, fileKey, inputStream, metadata));
-            return s3Client.getUrl(bucketName, fileKey).toString();
+        String bucketName = environment.getProperty("application.bucket.name");
+        String fileKey = FILE_PREFIX + imageDetail.getFolderName() + fileName + ".jpeg";
+        s3Client.putObject(new PutObjectRequest(bucketName, fileKey, inputStream, metadata));
+        System.out.println("the " + imageDetail.getFolderName() + " file has been uploaded.");
+        return s3Client.getUrl(bucketName, fileKey).toString();
     }
-
 }

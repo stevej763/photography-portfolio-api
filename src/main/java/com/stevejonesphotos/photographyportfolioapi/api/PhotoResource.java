@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/photos")
@@ -37,29 +36,8 @@ public class PhotoResource {
             @RequestParam String alt,
             @RequestParam List<String> categories,
             @RequestParam MultipartFile photo) {
-        String thumbnailUrl = uploadThumbnail(photo);
-        Photo newPhoto = new Photo(
-                UUID.randomUUID().toString(),
-                title,
-                createPhotoSlug(title),
-                alt,
-                description,
-                categories,
-                thumbnailUrl,
-                thumbnailUrl,
-                thumbnailUrl,
-                thumbnailUrl,
-                thumbnailUrl);
-        String id = photoService.add(newPhoto);
+        String id = photoService.addNewPhoto(title, description, alt, categories, photo);
         return new ResponseEntity<>(id, HttpStatus.OK);
-    }
-
-    private String createPhotoSlug(String title) {
-        return title.toLowerCase().replace(" ", "-");
-    }
-
-    private String uploadThumbnail(MultipartFile thumbnailImage) {
-        return "https://stevejonesphotos.co.uk/wp-content/uploads/2021/11/6A8DB73C-295C-471A-82D3-216DFD3AEF8B-scaled.jpeg";
     }
 
 }

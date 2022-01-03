@@ -19,15 +19,4 @@ public class FileConverter {
         }
         return convertedFile;
     }
-
-
-    public static File convertBufferedImageToFile(BufferedImage bufferedImage, String imageId) {
-        File imageFile = new File(imageId);
-        try {
-            ImageIO.write(bufferedImage, ".jpg", imageFile);
-            return imageFile;
-        } catch (IOException e) {
-            return imageFile;
-        }
-    }
 }
